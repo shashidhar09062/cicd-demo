@@ -17,9 +17,9 @@ jobs:
     - name: Deploy to Droplet
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.myrepo }}
+        host: ${{ secrets.SERVER_IP }}
         username: root
-        key: ${{ secrets.key }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd app/cicd-demo
           git pull origin main
