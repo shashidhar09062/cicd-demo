@@ -1,15 +1,30 @@
-- name: Deploy to Droplet
-  uses: appleboy/ssh-action@master
-  with:
-    host: ${{ secrets.SERVER_IP }}
-    username: root
-    key: ${{ secrets.SSH_PRIVATE_KEY }}
-    script: |
-      cd /root
-      rm -rf cicd-demo
-      git clone https://github.com/shashidhar09062/cicd-demo.git
-      cd cicd-demo
-      docker stop flask-app || true
-      docker rm flask-app || true
-      docker build -t cicd-demo .
-      docker run -d -p 80:5000 --name flask-app cicd-demo
+name: Deploy App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Deploy to Droplet
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /root
+            rm -rf cicd-demo
+            git clone https://github.com/shashidhar09062/cicd-demo.git
+            cd cicd-demo
+            docker stop flask-app || true
+            docker rm flask-app || true
+            docker build -t cicd-demo .
+            docker run -d -p 80:5000 --name flask-app cicd-demo
